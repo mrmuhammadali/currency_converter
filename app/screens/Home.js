@@ -50,9 +50,8 @@ export default class Home extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (hasPropChanged('baseCurrency', this.props, nextProps)) {
-      const { baseCurrency, dispatch, isDataAvailable, conversionRate } = nextProps
-      console.log(isDataAvailable, conversionRate)
-      dispatch(getConversion(baseCurrency))
+      const { baseCurrency, dispatch, isDataAvailable } = nextProps
+      !isDataAvailable && dispatch(getConversion(baseCurrency))
     }
   }
 
