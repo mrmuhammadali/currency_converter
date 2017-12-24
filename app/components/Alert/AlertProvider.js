@@ -1,6 +1,7 @@
 // libs
 import { connect } from 'react-redux'
 import DropdownAlert from 'react-native-dropdownalert'
+import get from 'lodash/get'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { View } from 'react-native'
@@ -21,7 +22,8 @@ export default class AlertProvider extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (hasPropChanged('errorMessage', this.props, nextProps)) {
-      this.dropdown.alertWithType('error', 'Error', nextProps.errorMessage.error)
+      const error = get(nextProps, 'errorMessage.error', null)
+      error && this.dropdown.alertWithType('error', 'Error', error)
     }
   }
 
@@ -35,12 +37,8 @@ export default class AlertProvider extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        {React.Children.only(this.props.children)}
-        <DropdownAlert
-          ref={(ref) => {
-            this.dropdown = ref
-          }}
-        />
+        { React.Children.only(this.props.children) }
+        <DropdownAlert ref={ref => { this.dropdown = ref }} />
       </View>
     )
   }
