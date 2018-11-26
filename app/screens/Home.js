@@ -16,13 +16,19 @@ import { LastConverted } from '../components/Text'
 import Logo from '../components/Logo'
 import TextInput from '../components/TextInput'
 
-@connect(state => {
+const mapStateToProps = state => {
   const isLoading = get(state, `currencies.isLoading`, false)
   const amount = get(state, 'currencies.data.amount', 100)
   const baseCurrency = get(state, 'currencies.data.baseCurrency', 'USD')
-  const quoteCurrency = get(state, 'currencies.data.quoteCurrency', 'GBP')
-  const conversionRate = get(state, `currencies.data.conversions[${baseCurrency}].rates[${quoteCurrency}]`, null)
-  const lastConvertedDate = moment(get(state, `currencies.data.conversions[${baseCurrency}].date`, moment()))
+  const quoteCurrency = get(state, 'currencies.data.quoteCurrency', 'EUR')
+  const conversionRate = get(
+    state,
+    `currencies.data.conversions[${baseCurrency}].rates[${quoteCurrency}]`,
+    null,
+  )
+  const lastConvertedDate = moment(
+    get(state, `currencies.data.conversions[${baseCurrency}].date`, moment()),
+  )
   const primaryColor = get(state, 'theme.primaryColor')
   const isDataAvailable = !!conversionRate
 
@@ -34,13 +40,14 @@ import TextInput from '../components/TextInput'
     conversionRate,
     lastConvertedDate,
     primaryColor,
-    isDataAvailable
+    isDataAvailable,
   }
-})
-export default class Home extends React.Component {
+}
+
+class Home extends React.Component {
   static propTypes = {
     navigation: PropTypes.object,
-    dispatch: PropTypes.func
+    dispatch: PropTypes.func,
   }
 
   componentWillMount() {
@@ -58,18 +65,18 @@ export default class Home extends React.Component {
   handlePressBaseCurrency = () => {
     this.props.navigation.navigate('CurrencyList', {
       title: 'Base Currency',
-      type: 'base'
+      type: 'base',
     })
   }
 
   handlePressQuoteCurrency = () => {
     this.props.navigation.navigate('CurrencyList', {
       title: 'Quote Currency',
-      type: 'quote'
+      type: 'quote',
     })
   }
 
-  handleTextChange = (amount) => {
+  handleTextChange = amount => {
     this.props.dispatch(changeCurrencyAmount(amount))
   }
 
@@ -90,9 +97,12 @@ export default class Home extends React.Component {
       quoteCurrency,
       conversionRate,
       lastConvertedDate,
-      primaryColor
+      primaryColor,
     } = this.props
-    const quotePrice = isLoading || !isDataAvailable ? '...' : (amount * conversionRate).toFixed(2)
+    const quotePrice =
+      isLoading || !isDataAvailable
+        ? '...'
+        : (amount * conversionRate).toFixed(2)
 
     return (
       <Container backgroundColor={primaryColor}>
@@ -106,23 +116,29 @@ export default class Home extends React.Component {
             defaultValue={amount.toString()}
             keyboardType="numeric"
             textColor={primaryColor}
-            onChangeText={this.handleTextChange} />
+            onChangeText={this.handleTextChange}
+          />
           <TextInput
             buttonText={quoteCurrency}
             onPress={this.handlePressQuoteCurrency}
             editable={false}
             value={quotePrice}
-            textColor={primaryColor} />
+            textColor={primaryColor}
+          />
           <LastConverted
             base={baseCurrency}
             quote={quoteCurrency}
             date={lastConvertedDate}
-            conversionRate={conversionRate} />
+            conversionRate={conversionRate}
+          />
           <ClearButton
             text="Reverse Currencies"
-            onPress={this.handlePressReverseCurrencies} />
+            onPress={this.handlePressReverseCurrencies}
+          />
         </KeyboardAvoidingView>
       </Container>
     )
   }
 }
+
+export default connect(mapStateToProps)(Home)

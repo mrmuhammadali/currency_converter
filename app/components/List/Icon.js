@@ -13,9 +13,12 @@ const Icon = ({ checkmark, visible, iconBackground }) => {
 
   return (
     <View style={iconStyles}>
-      <If condition={checkmark}>
-        <Image style={styles.checkIcon} source={require('./images/check.png')}/>
-      </If>
+      {checkmark && (
+        <Image
+          style={styles.checkIcon}
+          source={require('./images/check.png')}
+        />
+      )}
     </View>
   )
 }
@@ -23,7 +26,7 @@ const Icon = ({ checkmark, visible, iconBackground }) => {
 Icon.propTypes = {
   checkmark: PropTypes.bool,
   visible: PropTypes.bool,
-  iconBackground: PropTypes.string
+  iconBackground: PropTypes.string,
 }
 
 export default Icon

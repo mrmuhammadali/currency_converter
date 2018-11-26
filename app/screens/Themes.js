@@ -13,20 +13,21 @@ const styles = EStyleSheet.create({
   $blue: '$primaryBlue',
   $green: '$primaryGreen',
   $orange: '$primaryOrange',
-  $purple: '$primaryPurple'
+  $purple: '$primaryPurple',
 })
 
-@connect(state => {
+const mapStateToProps = state => {
   const { primaryColor } = state.theme
 
   return { primaryColor }
-})
-export default class Options extends React.Component {
+}
+
+class Themes extends React.Component {
   static propTypes = {
-    navigation: PropTypes.object
+    navigation: PropTypes.object,
   }
 
-  handleThemePress = (color) => {
+  handleThemePress = color => {
     const { dispatch, navigation } = this.props
     dispatch(changePrimaryColor(color))
     navigation.goBack()
@@ -43,30 +44,36 @@ export default class Options extends React.Component {
           selected
           checkmark={primaryColor === styles.$blue}
           iconBackground={styles.$blue}
-          onPress={() => this.handleThemePress(styles.$blue)} />
+          onPress={() => this.handleThemePress(styles.$blue)}
+        />
         <Separator />
         <ListItem
           text="Green"
           selected
           checkmark={primaryColor === styles.$green}
           iconBackground={styles.$green}
-          onPress={() => this.handleThemePress(styles.$green)} />
+          onPress={() => this.handleThemePress(styles.$green)}
+        />
         <Separator />
         <ListItem
           text="Orange"
           selected
           checkmark={primaryColor === styles.$orange}
           iconBackground={styles.$orange}
-          onPress={() => this.handleThemePress(styles.$orange)} />
+          onPress={() => this.handleThemePress(styles.$orange)}
+        />
         <Separator />
         <ListItem
           text="Purple"
           selected
           checkmark={primaryColor === styles.$purple}
           iconBackground={styles.$purple}
-          onPress={() => this.handleThemePress(styles.$purple)} />
+          onPress={() => this.handleThemePress(styles.$purple)}
+        />
         <Separator />
       </ScrollView>
     )
   }
 }
+
+export default connect(mapStateToProps)(Themes)

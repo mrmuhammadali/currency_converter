@@ -18,7 +18,7 @@ const isLoading = (state = false, action) => {
 
 const initialState = {
   baseCurrency: 'USD',
-  quoteCurrency: 'GBP',
+  quoteCurrency: 'EUR',
   amount: 1,
   conversions: {}
 }

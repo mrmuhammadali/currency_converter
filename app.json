@@ -2,7 +2,7 @@
   "expo": {
     "name": "Currency Converter",
     "slug": "currency-converter",
-    "sdkVersion": "23.0.0",
+    "sdkVersion": "25.0.0",
     "orientation": "portrait",
     "privacy": "public"
   }

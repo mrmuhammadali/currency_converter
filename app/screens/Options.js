@@ -1,8 +1,9 @@
 // libs
 import { Ionicons } from '@expo/vector-icons'
-import { Linking, Platform, ScrollView, StatusBar } from 'react-native'
+import { Platform, ScrollView, StatusBar } from 'react-native'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { WebBrowser } from 'expo'
 
 // src
 import { connectAlert } from '../components/Alert'
@@ -12,11 +13,10 @@ const ICON_COLOR = '#838383'
 const ICON_PREFIX = Platform.OS === 'ios' ? 'ios' : 'md'
 const ICON_SIZE = 23
 
-@connectAlert
-export default class Options extends React.Component {
+class Options extends React.Component {
   static propTypes = {
     navigation: PropTypes.object,
-    alertWithType: PropTypes.func
+    alertWithType: PropTypes.func,
   }
 
   handleThemesPress = () => {
@@ -24,8 +24,8 @@ export default class Options extends React.Component {
   }
 
   handleSitePress = () => {
-    Linking.openURL('http://fixer.io')
-      .catch(() => this.props.alertWithType('error', 'Sorry!', `Fixer.io can't be opened at the moment.`))
+    WebBrowser.openBrowserAsync('http://fixer.io')
+    // .catch(() => this.props.alertWithType('error', 'Sorry!', `Fixer.io can't be opened at the moment.`))
   }
 
   render() {
@@ -35,14 +35,30 @@ export default class Options extends React.Component {
         <ListItem
           text="Themes"
           onPress={this.handleThemesPress}
-          customIcon={ <Ionicons name={`${ICON_PREFIX}-arrow-forward`} color={ICON_COLOR} size={ICON_SIZE} /> } />
+          customIcon={
+            <Ionicons
+              name={`${ICON_PREFIX}-arrow-forward`}
+              color={ICON_COLOR}
+              size={ICON_SIZE}
+            />
+          }
+        />
         <Separator />
         <ListItem
           text="Fixer.io"
           onPress={this.handleSitePress}
-          customIcon={ <Ionicons name={`${ICON_PREFIX}-link`} color={ICON_COLOR} size={ICON_SIZE} /> } />
+          customIcon={
+            <Ionicons
+              name={`${ICON_PREFIX}-link`}
+              color={ICON_COLOR}
+              size={ICON_SIZE}
+            />
+          }
+        />
         <Separator />
       </ScrollView>
     )
   }
 }
+
+export default connectAlert(Options)
