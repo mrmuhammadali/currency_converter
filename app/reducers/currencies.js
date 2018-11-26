@@ -1,5 +1,9 @@
 // libs
 import { combineReducers } from 'redux'
+import flow from 'lodash/fp/flow'
+import keys from 'lodash/fp/keys'
+import sortBy from 'lodash/fp/sortBy'
+import uniq from 'lodash/fp/uniq'
 
 // src
 import * as ActionTypes from '../actions/currencies'
@@ -17,10 +21,11 @@ const isLoading = (state = false, action) => {
 }
 
 const initialState = {
-  baseCurrency: 'USD',
-  quoteCurrency: 'EUR',
+  baseCurrency: 'EUR',
+  quoteCurrency: 'USD',
   amount: 1,
-  conversions: {}
+  conversions: {},
+  currencyList: [],
 }
 
 const data = (state = initialState, action) => {
@@ -30,7 +35,11 @@ const data = (state = initialState, action) => {
     case ActionTypes.SWAP_CURRENCY: {
       const { baseCurrency, quoteCurrency } = state
 
-      return { ...state, baseCurrency: quoteCurrency, quoteCurrency: baseCurrency }
+      return {
+        ...state,
+        baseCurrency: quoteCurrency,
+        quoteCurrency: baseCurrency,
+      }
     }
     case ActionTypes.CHANGE_CURRENCY_AMOUNT: {
       return { ...state, amount: payload || 0 }
@@ -42,9 +51,19 @@ const data = (state = initialState, action) => {
       return { ...state, quoteCurrency: payload }
     }
     case ActionTypes.CONVERSION_FETCH_SUCCESS: {
-      const { base } = payload
+      const { base, rates } = payload
+      const currencyList = flow(
+        keys,
+        array => [...state.currencyList, ...array],
+        uniq,
+        sortBy(''),
+      )(rates)
 
-      return { ...state, conversions: { ...state.conversions, [base]: payload } }
+      return {
+        ...state,
+        currencyList,
+        conversions: { ...state.conversions, [base]: payload },
+      }
     }
     default: {
       return state

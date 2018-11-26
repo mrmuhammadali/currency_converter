@@ -1,5 +1,7 @@
 // libs
 import { combineReducers } from 'redux'
+import capitalize from 'lodash/fp/capitalize'
+import lowerCase from 'lodash/fp/lowerCase'
 
 // src
 import * as ActionTypes from '../actions'
@@ -13,7 +15,15 @@ function errorMessage(state = null, action) {
 
   if (type === ActionTypes.RESET_ERROR_MESSAGE) {
     return null
-  } else if (error) {
+  }
+  if (
+    type === ActionTypes.CONVERSION_FETCH_SUCCESS &&
+    !payload.success &&
+    payload.error
+  ) {
+    return { error: capitalize(lowerCase(payload.error.type)) }
+  }
+  if (error) {
     return payload || null
   }
 
@@ -24,5 +34,5 @@ export default combineReducers({
   currencies,
   errorMessage,
   nav,
-  theme
+  theme,
 })

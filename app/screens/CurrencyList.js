@@ -1,40 +1,29 @@
+// @flow
 // libs
 import { connect } from 'react-redux'
 import { FlatList, StatusBar, View } from 'react-native'
-import get from 'lodash/get'
+import filter from 'lodash/fp/filter'
+import getOr from 'lodash/fp/getOr'
 import PropTypes from 'prop-types'
 import React from 'react'
-import sortBy from 'lodash/sortBy'
-import without from 'lodash/without'
 
 // src
 import { changeBaseCurrency, changeQuoteCurrency } from '../actions'
 import { ListItem, Separator } from '../components/List'
 
 const mapStateToProps = (state, ownProps) => {
-  const baseCurrency = get(state, 'currencies.data.baseCurrency', 'USD')
-  const quoteCurrency = get(state, 'currencies.data.quoteCurrency', 'EUR')
-  const currencyType = get(ownProps, 'navigation.state.params.type', 'base')
-  const primaryColor = get(state, 'theme.primaryColor')
-  const unSortedCurrencyList = Object.keys(
-    get(state, `currencies.data.conversions[${baseCurrency}].rates`, {}),
-  )
-  let currencyList = []
-
-  if (currencyType === 'base') {
-    currencyList = sortBy(
-      without([baseCurrency, ...unSortedCurrencyList], quoteCurrency),
-    )
-  } else if (currencyType === 'quote') {
-    currencyList = sortBy(unSortedCurrencyList)
-  }
+  const currencyType = getOr('base', 'navigation.state.params.type')(ownProps)
+  const primaryColor = getOr('', 'theme.primaryColor')(state)
+  const data = getOr({}, 'currencies.data')(state)
+  const { baseCurrency, quoteCurrency, currencyList, conversions } = data
+  const withoutCurrency = currencyType === 'base' ? quoteCurrency : baseCurrency
 
   return {
     baseCurrency,
     quoteCurrency,
     currencyType,
     primaryColor,
-    currencyList,
+    currencyList: filter(item => item !== withoutCurrency)(currencyList),
   }
 }
 

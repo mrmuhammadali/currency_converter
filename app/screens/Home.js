@@ -1,6 +1,6 @@
 // libs
 import { connect } from 'react-redux'
-import get from 'lodash/get'
+import getOr from 'lodash/fp/getOr'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -17,19 +17,16 @@ import Logo from '../components/Logo'
 import TextInput from '../components/TextInput'
 
 const mapStateToProps = state => {
-  const isLoading = get(state, `currencies.isLoading`, false)
-  const amount = get(state, 'currencies.data.amount', 100)
-  const baseCurrency = get(state, 'currencies.data.baseCurrency', 'USD')
-  const quoteCurrency = get(state, 'currencies.data.quoteCurrency', 'EUR')
-  const conversionRate = get(
-    state,
-    `currencies.data.conversions[${baseCurrency}].rates[${quoteCurrency}]`,
-    null,
+  const isLoading = getOr(false, `currencies.isLoading`)(state)
+  const data = getOr({}, 'currencies.data')(state)
+  const { amount, baseCurrency, quoteCurrency, conversions } = data
+  const conversionRate = getOr(null, [baseCurrency, 'rates', quoteCurrency])(
+    conversions,
   )
   const lastConvertedDate = moment(
-    get(state, `currencies.data.conversions[${baseCurrency}].date`, moment()),
+    getOr(moment(), [baseCurrency, 'date'])(conversions),
   )
-  const primaryColor = get(state, 'theme.primaryColor')
+  const primaryColor = getOr('', 'theme.primaryColor')(state)
   const isDataAvailable = !!conversionRate
 
   return {

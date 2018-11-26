@@ -24,7 +24,7 @@ class Options extends React.Component {
   }
 
   handleSitePress = () => {
-    WebBrowser.openBrowserAsync('http://fixer.io')
+    WebBrowser.openBrowserAsync('https://fixer.io')
     // .catch(() => this.props.alertWithType('error', 'Sorry!', `Fixer.io can't be opened at the moment.`))
   }
 
